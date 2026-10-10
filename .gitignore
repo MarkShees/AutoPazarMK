@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+
+instance/*
+!instance/.gitkeep
+
+static/uploads/cars/*
+!static/uploads/cars/.gitkeep
+
+.vscode/
+.env

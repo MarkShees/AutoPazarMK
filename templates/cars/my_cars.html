@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}Мои огласи — AutoPazar MK{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Мои огласи</h1>
+    <a href="{{ url_for('cars.create') }}" class="btn btn-cta">Додади оглас</a>
+</div>
+
+{% if listings %}
+<div class="table-responsive">
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>Слика</th>
+                <th>Оглас</th>
+                <th>Цена</th>
+                <th>Статус</th>
+                <th>Тип</th>
+                <th>Прегледи</th>
+                <th>Телефон</th>
+                <th>Акции</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for listing in listings %}
+            <tr>
+                <td style="width:100px;">
+                    <img src="{{ url_for('static', filename=listing.main_image or 'img/placeholder-car.svg') }}"
+                        alt="{{ listing.title }}"
+                        class="rounded"
+                        style="width:90px;height:60px;object-fit:cover;">
+                </td>
+                <td>
+                     <a href="{{ url_for('cars.detail', id=listing.id) }}" class="fw-semibold text-decoration-none">
+                        {{ listing.title }}
+                     </a>
+                     <div class="small text-muted">{{ listing.brand }} {{ listing.model }} · {{ listing.year }}</div>
+                </td>
+                <td>{{ "{:,.0f}".format(listing.price) }} {{ listing.currency }}</td>
+                <td>
+                    {% if listing.status == 'active' %}
+                    <span class="badge bg-success">Активен оглас</span>
+                    {% elif listing.status == 'sold' %}
+                    <span class="badge badge-sold">Продадено</span>
+                    {% elif listing.status == 'expired' %}
+                    <span class="badge bg-secondary">Истечен</span>
+                    {% else %}
+                    <span class="badge bg-warning text-dark">{{ listing.status }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if listing.listing_type == 'premium' %}
+                    <span class="badge badge-premium">Премиум</span>
+                    {% elif listing.listing_type == 'featured' %}
+                    <span class="badge badge-featured">Истакнато</span>
+                    {% else %}
+                    <span class="badge bg-light text-dark">Обичен</span>
+                    {% endif %}
+                </td>
+                <td>{{ listing.views_count }}</td>
+                <td>{{ listing.phone_views_count }}</td>
+                <td>
+                    <div class="d-flex flex-wrap gap-1">
+                        <a href="{{ url_for('cars.edit', id=listing.id) }}" class="btn btn-sm btn-warning">
+                            Измени оглас
+                        </a>
+
+                        <a href="{{ url_for('payments.create', car_id=listing.id) }}"
+                            class="btn btn-sm btn-outline-primary">
+                            Истакни оглас
+                        </a>
+
+                        {% if listing.status != 'sold' %}
+                       <form method="POST" action="{{ url_for('cars.mark_sold', id=listing.id) }}">
+                            <button type="submit" class="btn btn-sm btn-secondary">
+                                Означи како продадено
+                            </button>
+                       </form>
+                       {% else %}
+                       <form method="POST" action="{{ url_for('cars.renew', id=listing.id) }}">
+                            <button type="submit" class="btn btn-sm btn-success">
+                                Обнови оглас
+                            </button>
+                       </form>
+                       {% endif %}
+
+                       <form method="POST"
+                            action="{{ url_for('cars.delete', id=listing.id) }}"
+                            onsubmit="return confirm('Дали сте сигурни дека сакате да го избришете огласот?');">
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                Избриши оглас
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="text-center py-5 text-muted">
+    <h4>Немате огласи</h4>
+    <p>Додадете го вашиот прв оглас.</p>
+    <a href="{{ url_for('cars.create') }}" class="btn btn-cta">Додади оглас</a>
+</div>
+{% endif %}
+{% endblock %}

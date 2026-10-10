@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Огласи — Админ{% endblock %}
+
+{% block content %}
+<a href="{{ url_for('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary mb-3">← Назад</a>
+<h1 class="mb-4">Огласи</h1>
+
+<div class="table-responsive">
+<table class="table align-middle">
+    <thead>
+        <tr>
+            <th>ID</th><th>Наслов</th><th>Корисник</th><th>Статус</th><th>Тип</th><th>Акции</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for listing in listings %}
+        <tr>
+            <td>{{ listing.id }}</td>
+            <td><a href="{{ url_for('cars.detail', id=listing.id) }}">{{ listing.title }}</a></td>
+            <td>{{ listing.owner.name }}</td>
+            <td>{{ listing.status }}</td>
+            <td>{{ listing.listing_type }}</td>
+            <td>
+                <div class="d-flex flex-wrap gap-1">
+                    {% if listing.status == 'pending' %}
+                    <form method="POST" action="{{ url_for('admin.approve_car', id=listing.id) }}">
+                        <button class="btn btn-sm btn-success" type="submit">Одобри</button>
+                    </form>
+                    <form method="POST" action="{{ url_for('admin.reject_car', id=listing.id) }}">
+                        <button class="btn btn-sm btn-warning" type="submit">Одбиј</button>
+                    </form>
+                    {% endif %}
+                    <form method="POST" action="{{ url_for('admin.change_car_status', id=listing.id) }}" class="d-flex gap-1">
+                        <select name="status" class="form-select form-select-sm">
+                            {% for s in ['active','pending','rejected','sold','expired'] %}
+                            <option value="{{ s }}" {% if listing.status == s %}selected{% endif %}>{{ s }}</option>
+                            {% endfor %}
+                        </select>
+                        <button class="btn btn-sm btn-outline-primary" type="submit">Смени</button>
+                    </form>
+                    <form method="POST" action="{{ url_for('admin.delete_car', id=listing.id) }}"
+                          onsubmit="return confirm('Избриши оглас?');">
+                        <button class="btn btn-sm btn-danger" type="submit">Избриши</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

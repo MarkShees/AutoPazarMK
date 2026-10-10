@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% block title %}Огласи — AutoPazar MK{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Огласи</h1>
+
+<div class="row">
+    <div class="col-lg-3 mb-4">
+        <form method="GET" action="{{ url_for('cars.list_cars') }}" class="card p-3 shadow-sm">
+            <h5 class="mb-3">Пребарај возило</h5>
+
+            <div class="mb-2">
+                <label class="form-label">Клучни зборови</label>
+                <input type="text" name="keyword" class="form-control" value="{{ args.get('keyword', '') }}">
+            </div>
+
+            <div class="mb-2">
+                <label class="form-label">Марка</label>
+                <input type="text" name="brand" class="form-control" value="{{ args.get('brand', '') }}">
+            </div>
+
+            <div class="mb-2">
+                <label class="form-label">Модел</label>
+                <input type="text" name="model" class="form-control" value="{{ args.get('model', '') }}">
+            </div>
+
+            <div class="row mb-2">
+                <div class="col">
+                    <label class="form-label">Цена од</label>
+                    <input type="number" name="price_from" class="form-control" value="{{ args.get('price_from', '') }}">
+                </div>
+                <div class="col">
+                    <label class="form-label">Цена до</label>
+                    <input type="number" name="price_to" class="form-control" value="{{ args.get('price_to', '') }}">
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col">
+                    <label class="form-label">Година од</label>
+                    <input type="number" name="year_from" class="form-control" value="{{ args.get('year_from', '') }}">
+                </div>
+                <div class="col">
+                    <label class="form-label">Година до</label>
+                    <input type="number" name="year_to" class="form-control" value="{{ args.get('year_to', '') }}">
+                </div>
+            </div>
+            <div class="mb-2">
+                <label class="form-label">Километража до</label>
+                <input type="number" name="mileage_to" class="form-control" value="{{ args.get('mileage_to', '') }}">
+            </div>
+            <div class="mb-2">
+                <label class="form-label">Гориво</label>
+                <select name="fuel" class="form-select">
+                    <option value="">Сите</option>
+                    {% for f in ['Бензин','Дизел','Хибрид','Електричен','Плин'] %}
+                    <option value="{{ f }}" {% if args.get('fuel') == f %}selected{% endif %}>{{ f }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-2">
+                <label class="form-label">Менувач</label>
+                <select name="transmission" class="form-select">
+                    <option value="">Сите</option>
+                    <option value="Рачен" {% if args.get('transmission') == 'Рачен' %}selected{% endif %}>Рачен</option>
+                    <option value="Автоматски" {% if args.get('transmission') == 'Автоматски' %}selected{% endif %}>Автоматски</option>
+                </select>
+            </div>
+
+            <div class="mb-2">
+                <label class="form-label">Каросерија</label>
+                <select name="body_type" class="form-select">
+                    <option value="">Сите</option>
+                    {% for b in ['Лимузина','Хечбек','Караван','SUV','Купе','Кабриолет','Комбе'] %}
+                    <option value="{{ b }}" {% if args.get('body_type') == b %}selected{% endif %}>{{ b }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-2">
+                <label class="form-label">Локација</label>
+                <select name="city" class="form-select">
+                    <option value="">Сите</option>
+                    {% for c in ['Скопје','Битола','Охрид','Тетово','Куманово','Прилеп','Струмица','Велес','Штип','Гостивар','Кичево','Кавадарци','Струга','Кочани','Неготино','Крива Паланка', 'Радовиш', 'Пробиштип', 'Свети Николе', 'Виница', 'Друго'] %}
+                    <option value="{{ c }}" {% if args.get('city') == c %}selected{% endif %}>{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" name="with_image" value="1" id="with_image"
+                    {% if args.get('with_image') == '1' %}checked{% endif %}>
+                <label class="form-check-label" for="with_image">Само со слика</label>
+            </div>
+
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" name="featured" value="1" id="featured"
+                    {% if args.get('featured') == '1' %}checked{% endif %}>
+                <label class="form-check-label" for="featured">Само истакнати</label>
+            </div>
+
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" name="registered" value="1" id="registered"
+                    {% if args.get('registered') == '1' %}checked{% endif %}>
+                <label class="form-check-label" for="registered">Само регистрирани</label>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Сортирање</label>
+                <select name="sort" class="form-select">
+                    <option value="newest" {% if args.get('sort', 'newest') == 'newest' %}selected{% endif %}>Најнови</option>
+                    <option value="cheapest" {% if args.get('sort') == 'cheapest' %}selected{% endif %}>Најевтини</option>
+                    <option value="expensive" {% if args.get('sort') == 'expensive' %}selected{% endif %}>Најскапи</option>
+                    <option value="mileage" {% if args.get('sort') == 'mileage' %}selected{% endif %}>Најмала километража</option>
+                    <option value="year" {% if args.get('sort') == 'year' %}selected{% endif %}>Најнова година</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-cta w-100">Пребарај</button>
+            <a href="{{ url_for('cars.list_cars') }}" class="btn btn-outline-secondary w-100 mt-2">Ресетирај</a>
+        </form>
+    </div>
+
+    <div class="col-lg-9">
+        {% if pagination.items %}
+        <div class="row g-3">
+            {% for listing in pagination.items %}
+            <div class="col-md-6 col-xl-4">
+                {% include 'cars/_card.html' %}
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if pagination.pages > 1 %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if pagination.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('cars.list_cars', page=pagination.prev_num, **args) }}">Претходна</a>
+                </li>
+                {% endif %}
+                {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if p %}
+                    <li class="page-item {% if p == pagination.page %}active{% endif %}">
+                        <a class="page-link" href="{{ url_for('cars.list_cars', page=p, **args) }}">{{ p }}</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">…</span></li>
+                    {% endif %}
+                {% endfor %}
+                {% if pagination.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('cars.list_cars', page=pagination.next_num, **args) }}">Следна</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <div class="text-center py-5 text-muted">
+            <h4>Нема пронајдени огласи</h4>
+            <p>Пробајте со други филтри.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

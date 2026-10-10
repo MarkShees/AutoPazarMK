@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Мој профил — AutoPazar MK{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Мој профил</h1>
+
+<div class="row">
+    <div class="col-lg-6">
+        <form method="POST" class="card p-4 shadow-sm">
+            {{ form.hidden_tag() }}
+
+            <div class="mb-3">
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control") }}
+                {% for error in form.name.errors %}
+                <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="text" class="form-control" value="{{ current_user.email }}" disabled>
+            </div>
+
+            <div class="mb-3">
+                {{ form.phone.label(class="form-label") }}
+                {{ form.phone(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.city.label(class="form-label") }}
+                {{ form.city(class="form-control") }}
+            </div>
+
+            {{ form.submit(class="btn btn-cta") }}
+        </form>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card p-4 shadow-sm">
+            <h5>Мои активности</h5>
+            <p class="mb-2"><strong>Улога:</strong> {{ current_user.role }}</p>
+            <p class="mb-2"><strong>Огласи:</strong> {{ current_user.listings.count() }}</p>
+            <p class="mb-3"><strong>Регистриран:</strong> {{ current_user.created_at.strftime('%d.%m.%Y') }}</p>
+            <a href="{{ url_for('cars.my_cars') }}" class="btn btn-outline-primary btn-sm">Мои огласи</a>
+            <a href="{{ url_for('favorites.list_favorites') }}" class="btn btn-outline-secondary btn-sm">Зачувани</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

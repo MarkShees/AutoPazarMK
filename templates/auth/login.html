@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Најава — AutoPazar MK{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card p-4 shadow-sm">
+            <h1 class="h3 mb-4 text-center">Најави се</h1>
+            <form method="POST">
+                {{ form.hidden_tag() }}
+
+                <div class="mb-3">
+                    {{ form.email.label(class="form-label") }}
+                    {{ form.email(class="form-control", placeholder="email@example.com") }}
+                    {% for error in form.email.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.password.label(class="form-label") }}
+                    {{ form.password(class="form-control") }}
+                    {% for error in form.password.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                {{ form.submit(class="btn btn-cta w-100") }}
+            </form>
+            <p class="text-center mt-3 mb-0">
+                Немате профил?
+                <a href="{{ url_for('auth.register') }}">Регистрирај се</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

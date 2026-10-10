@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Рецензии — Админ{% endblock %}
+
+{% block content %}
+<a href="{{ url_for('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary mb-3">← Назад</a>
+<h1 class="mb-4">Рецензии</h1>
+
+<table class="table align-middle">
+    <thead>
+        <tr>
+            <th>ID</th><th>Од</th><th>За</th><th>Оглас</th><th>Оцена</th><th>Коментар</th><th>Акција</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for review in reviews %}
+        <tr>
+            <td>{{ review.id }}</td>
+            <td>{{ review.reviewer.name }}</td>
+            <td>{{ review.reviewed_user.name }}</td>
+            <td>{{ review.car_listing.title }}</td>
+            <td>{{ review.rating }}</td>
+            <td>{{ review.comment }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('admin.delete_review', id=review.id) }}"
+                      onsubmit="return confirm('Избриши рецензија?');">
+                      <button class="btn btn-sm btn-danger">Избриши</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

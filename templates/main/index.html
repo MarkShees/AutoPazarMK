@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Почетна — AutoPazar MK{% endblock %}
+
+{% block content %}
+<section class="hero text-center mb-5">
+    <div class="container">
+        <h1 class="display-5 fw-bold">Најди го твојот следен автомобил</h1>
+        <p class="lead mb-4">Купи или продади автомобил брзо, лесно и безбедно</p>
+
+        <form method="GET" action="{{ url_for('cars.list_cars') }}" class="row g-2 justify-content-center text-start">
+            <div class="col-md-2">
+                <input type="text" name="brand" class="form-control" placeholder="Марка">
+            </div>
+            <div class="col-md-2">
+                <input type="text" name="model" class="form-control" placeholder="Модел">
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="price_from" class="form-control" placeholder="Цена од">
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="price_to" class="form-control" placeholder="Цена до">
+            </div>
+            <div class="col-md-2">
+                <select name="fuel" class="form-select">
+                    <option value="">Гориво</option>
+                    <option value="Бензин">Бензин</option>
+                    <option value="Дизел">Дизел</option>
+                    <option value="Хибрид">Хибрид</option>
+                    <option value="Електричен">Електричен</option>
+                    <option value="Плин">Плин</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-cta w-100">Пребарај</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+{% if premium %}
+<section class="mb-5">
+    <h2 class="mb-3">Премиум огласи</h2>
+    <div class="row g-3">
+        {% for listing in premium %}
+        <div class="col-md-6 col-lg-3">
+            {% include 'cars/_card.html' %}
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+{% if featured %}
+<section class="mb-5">
+    <h2 class="mb-3">Истакнати огласи</h2>
+    <div class="row g-3">
+        {% for listing in featured %}
+        <div class="col-md-6 col-lg-3">
+            {% include 'cars/_card.html' %}
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<section class="mb-5">
+    <h2 class="mb-3">Најнови огласи</h2>
+    {% if latest %}
+    <div class="row g-3">
+        {% for listing in latest %}
+        <div class="col-md-6 col-lg-3">
+            {% include 'cars/_card.html' %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-muted">Сè уште нема огласи.</p>
+    {% endif %}
+</section>
+
+<section class="section-light mb-5">
+    <h2 class="mb-3 text-center">Популарни марки</h2>
+    <div class="d-flex flex-wrap justify-content-center gap-2">
+        {% for brand in brands %}
+        <a class="btn btn-outline-secondary btn-sm"
+        href="{{ url_for('cars.list_cars', brand=brand) }}">{{ brand }}</a>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="mb-5">
+    <h2 class="mb-4 text-center">Како функционира?</h2>
+    <div class="row text-center">
+        <div class="col-md-4 mb-3">
+            <h5>1. Пребарај</h5>
+            <p class="text-muted">Филтрирај по марка, цена, година и локација.</p>
+        </div>
+        <div class="col-md-4 mb-3">
+            <h5>2. Контактирај</h5>
+            <p class="text-muted">Прикажи број или испрати порака до продавачот.</p>
+        </div>
+        <div class="col-md-4 mb-3">
+            <h5>3. Продади</h5>
+            <p class="text-muted">Додади оглас со слики за неколку минути.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

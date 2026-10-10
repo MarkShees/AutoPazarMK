@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Пријави — Админ{% endblock %}
+
+{% block content %}
+<a href="{{ url_for('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary mb-3">← Назад</a>
+<h1 class="mb-4">Пријави</h1>
+
+<table class="table align-middle">
+    <thead>
+        <tr>
+            <th>ID</th><th>Корисник</th><th>Оглас</th><th>Причина</th><th>Коментар</th><th>Статус</th><th>Акција</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for report in reports %}
+        <tr>
+            <td>{{ report.id }}</td>
+            <td>{{ report.user.name }}</td>
+            <td><a href="{{ url_for('cars.detail', id=report.car_listing_id) }}">{{ report.car_listing.title }}</a></td>
+            <td>{{ report.reason }}</td>
+            <td>{{ report.comment or '-' }}</td>
+            <td>{{ report.status }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('admin.report_status', id=report.id) }}" class="d-flex gap-1">
+                    <select name="status" class="form-select form-select-sm">
+                        {% for s in ['pending','reviewed','dismissed'] %}
+                        <option value="{{ s }}" {% if report.status == s %}selected{% endif %}>{{ s }}</option>
+                        {% endfor %}
+                    </select>
+                    <button class="btn btn-sm btn-outline-primary" type="submit">Смени</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

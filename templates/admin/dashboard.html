@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Админ панел — AutoPazar MK{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Админ панел</h1>
+
+<div class="mb-4 d-flex flex-wrap gap-2">
+    <a href="{{ url_for('admin.users') }}" class="btn btn-outline-primary">Корисници</a>
+    <a href="{{ url_for('admin.cars') }}" class="btn btn-outline-primary">Огласи</a>
+    <a href="{{ url_for('admin.payments') }}" class="btn btn-outline-primary">Уплати</a>
+    <a href="{{ url_for('admin.reports') }}" class="btn btn-outline-primary">Пријави</a>
+    <a href="{{ url_for('admin.reviews') }}" class="btn btn-outline-primary">Рецензии</a>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-4"><div class="card p-3"><div class="text-muted">Корисници</div><div class="fs-3 fw-bold">{{ stats.users }}</div></div></div>
+    <div class="col-md-4"><div class="card p-3"><div class="text-muted">Огласи</div><div class="fs-3 fw-bold">{{ stats.listings }}</div></div></div>
+    <div class="col-md-4"><div class="card p-3"><div class="text-muted">Активни</div><div class="fs-3 fw-bold">{{ stats.active }}</div></div></div>
+    <div class="col-md-4"><div class="card p-3"><div class="text-muted">Продадени</div><div class="fs-3 fw-bold">{{ stats.sold }}</div></div></div>
+    <div class="col-md-4"><div class="card p-3"><div class="text-muted">Pending уплати</div><div class="fs-3 fw-bold">{{ stats.pending_payments }}</div></div></div>
+    <div class="col-md-4"><div class="card p-3"><div class="text-muted">Featured</div><div class="fs-3 fw-bold">{{ stats.featured }}</div></div></div>
+    <div class="col-md-4"><div class="card p-3"><div class="text-muted">Premium</div><div class="fs-3 fw-bold">{{ stats.premium }}</div></div></div>
+    <div class="col-md-4"><div class="card p-3"><div class="text-muted">Пријави</div><div class="fs-3 fw-bold">{{ stats.reports }}</div></div></div>
+    <div class="col-md-4"><div class="card p-3"><div class="text-muted">Рецензии</div><div class="fs-3 fw-bold">{{ stats.reviews }}</div></div></div>
+</div>
+{% endblock %}

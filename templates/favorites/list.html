@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Зачувани огласи — AutoPazar MK{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Зачувани огласи</h1>
+
+{% if listings %}
+<div class="row g-3">
+    {% for listing in listings %}
+    <div class="col-md-6 col-lg-3">
+        {% include 'cars/_card.html' %}
+        <form method="POST" action="{{ url_for('favorites.remove', id=listing.id) }}" class="mt-2">
+            <button type="submit" class="btn btn-outline-danger btn-sm w-100">Отстрани од зачувани</button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5 text-muted">
+    <h4>Немате зачувани огласи</h4>
+    <p>Зачувајте оглас од деталната страна.</p>
+    <a href="{{ url_for('cars.list_cars') }}" class="btn btn-cta">Пребарај огласи</a>
+</div>
+{% endif %}
+{% endblock %}

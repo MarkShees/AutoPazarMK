@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Примени пораки — AutoPazar MK{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Примени пораки</h1>
+    <a href="{{ url_for('messages.sent') }}" class="btn btn-outline-secondary">Испратени пораки</a>
+</div>
+
+{% if messages %}
+<div class="list-group">
+    {% for message in messages %}
+    <a href="{{ url_for('messages.detail', id=message.id) }}"
+        class="list-group-item list-group-item-action {% if not message.read_at %}fw-bold{% endif %}">
+        <div class="d-flex justify-content-between">
+            <div>
+                <div>Од: {{ message.sender.name }}</div>
+                <div class="small text-muted">Оглас: {{ message.car_listing.title }}</div>
+                <div class="small">{{ message.body[:80] }}{% if message.body|length > 80 %}...{% endif %}</div>
+            </div>
+            <div class="text-end small text-muted">
+                {{ message.created_at.strftime('%d.%m.%Y %H:%M') }}
+                {% if not message.read_at %}
+                <div><span class="badge bg-warning text-dark">Нова</span></div>
+                {% endif %}
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5 text-muted">
+    <h4>Немате примени пораки</h4>
+</div>
+{% endif %}
+{% endblock %}

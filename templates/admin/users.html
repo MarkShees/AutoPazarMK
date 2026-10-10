@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Корисници — Админ{% endblock %}
+
+{% block content %}
+<a href="{{ url_for('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary mb-3">← Назад</a>
+<h1 class="mb-4">Корисници</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th><th>Име</th><th>Email</th><th>Град</th><th>Улога</th><th>Телефон</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.city or '-' }}</td>
+            <td>{{ user.role }}</td>
+            <td>{{ user.phone or '-' }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

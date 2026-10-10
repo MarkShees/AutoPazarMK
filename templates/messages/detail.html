@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Порака — AutoPazar MK{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <a href="{{ url_for('messages.inbox') }}" class="btn btn-outline-secondary btn-sm">← Назад</a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h1 class="h4 mb-3">Детали за порака</h1>
+
+        <p><strong>Од:</strong> {{ message.sender.name }}</p>
+        <p><strong>До:</strong> {{ message.receiver.name }}</p>
+        <p><strong>Оглас:</strong>
+            <a href="{{ url_for('cars.detail', id=message.car_listing_id) }}">
+                {{ message.car_listing.title }}
+            </a>
+        </p>
+        <p class="text-muted small">
+            {{ message.created_at.strftime('%d.%m.%Y %H:%M') }}
+        </p>
+
+        <hr>
+        <p class="mb-0" style="white-space: pre-wrap;">{{ message.body }}</p>
+    </div>
+</div>
+{% endblock %}

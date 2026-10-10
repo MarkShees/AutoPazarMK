@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Остави рецензија — AutoPazar MK{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Остави рецензија</h1>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <p class="mb-1"><strong>Корисник:</strong> {{ reviewed_user.name }}</p>
+        <p class="mb-0"><strong>Оглас:</strong> {{ listing.title }}</p>
+    </div>
+</div>
+
+<form method="POST" class="card p-4 shadow-sm">
+    {{ form.hidden_tag() }}
+
+    <div class="mb-3">
+        {{ form.type.label(class="form-label") }}
+        {{ form.type(class="form-select") }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.rating.label(class="form-label") }}
+        {{ form.rating(class="form-select") }}
+        {% for error in form.rating.errors %}
+        <div class="text-danger small">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="mb-3">
+        {{ form.comment.label(class="form-label") }}
+        {{ form.comment(class="form-control", rows=5) }}
+        {% for error in form.comment.errors %}
+        <div class="text-danger small">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    {{ form.submit(class="btn btn-cta") }}
+    <a href="{{ url_for('cars.detail', id=listing.id) }}" class="btn btn-outline-secondary">Откажи</a>
+</form>
+{% endblock}

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <rect width="800" height="500" fill="#e9ecef"/>
+  <rect x="120" y="180" width="560" height="160" rx="20" fill="#ced4da"/>
+  <circle cx="220" cy="340" r="40" fill="#adb5bd"/>
+  <circle cx="580" cy="340" r="40" fill="#adb5bd"/>
+  <text x="400" y="130" text-anchor="middle" fill="#6c757d" font-size="28" font-family="Arial">Нема слика</text>
+</svg>

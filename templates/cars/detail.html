@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% block title %}{{ listing.title }} — AutoPazar MK{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        {% if listing.is_sold %}
+        <span class="badge badge-sold mb-2">Продадено</span>
+        {% endif %}
+        {% if listing.is_premium %}
+        <span class="badge badge-premium mb-2">Премиум</span>
+        {% endif %}
+        {% if listing.is_featured %}
+        <span class="badge badge-featured mb-2">Истакнато</span>
+        {% endif %}
+
+        <h1 class="mb-3">{{ listing.title }}</h1>
+
+        <div id="carGallery" class="carousel slide mb-4" data-bs-ride="carousel">
+            <div class="carousel-inner rounded">
+                {% set images = listing.images.order_by('sort_order').all() %}
+                {% if images %}
+                    {% for image in images %}
+                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                        <img src="{{ url_for('static', filename=image.path) }}"
+                            class="d-block w-100" style="max-height:480px;object-fit:cover;"
+                            alt="{{ listing.title }}">
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <div class="carousel-item active">
+                    <img src="{{ url_for('static', filename='img/placeholder-car.svg') }}"
+                        class="d-block w-100" style="max-height:480px;object-fit:cover;" alt="Нема слика">
+                </div>
+                {% endif %}
+            </div>
+            {% if images and images|length > 1 %}
+            <button class="carousel-control-prev" type="button" data-bs-target="#carGallery" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carGallery" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+            {% endif %}
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>Основни информации</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Марка:</strong> {{ listing.brand }}</p>
+                        <p><strong>Модел:</strong> {{ listing.model }}</p>
+                        <p><strong>Година:</strong> {{ listing.year }}</p>
+                        <p><strong>Километража:</strong> {{ listing.mileage }} km</p>
+                        <p><strong>Гориво:</strong> {{ listing.fuel_type }}</p>
+                        <p><strong>Менувач:</strong> {{ listing.transmission }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Каросерија:</strong> {{ listing.body_type }}</p>
+                        <p><strong>Моќност:</strong> {{ listing.power_kw or '-' }} kW</p>
+                        <p><strong>Кубикажа:</strong> {{ listing.engine_size or '-' }}</p>
+                        <p><strong>Врати:</strong> {{ listing.doors or '-' }}</p>
+                        <p><strong>Боја:</strong> {{ listing.color or '-' }}</p>
+                        <p><strong>Регистрација:</strong> {{ listing.registration or '-' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>Опис</h5>
+                <p>{{ listing.description or 'Нема опис.' }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card mb-3 sticky-top" style="top:1rem;">
+            <div class="card-body">
+                <p class="fs-3 fw-bold text-primary mb-1">
+                    {{ "{:,.0f}".format(listing.price) }} {{ listing.currency }}
+                </p>
+                <p class="text-muted"><strong>Локација:</strong> {{ listing.city }}</p>
+                <p class="small text-muted">Прегледи: {{ listing.views_count }}</p>
+
+                <button id="showPhoneBtn" class="btn btn-cta w-100 mb-2" type="button">
+                    Прикажи број
+                </button>
+                <p id="phoneNumber" class="fw-bold text-center d-none"></p>
+                {% if not current_user.is_authenticated %}
+                <p class="small text-muted">Регистрирај се за побрза комуникација со продавачите.</p>
+                {% endif %}
+
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('messages.send', car_id=listing.id) }}" class="btn btn-outline-primary w-100 mb-2">
+                    Испрати порака
+                </a>
+                {% if is_favorited %}
+                <form method="POST" action="{{ url_for('favorites.remove', id=listing.id) }}">
+                    <button class="btn btn-outline-secondary w-100 mb-2" type="submit">Отстрани од зачувани</button>
+                </form>
+                {% else %}
+                <form method="POST" action="{{ url_for('favorites.add', id=listing.id) }}">
+                    <button class="btn btn-outline-secondary w-100 mb-2" type="submit">Зачувај оглас</button>
+                </form>
+                {% endif %}
+                <a href="{{ url_for('reports.create', car_id=listing.id) }}" class="btn btn-outline-danger w-100 mb-2">
+                    Пријави оглас
+                </a>
+                {% else %}
+                <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary w-100 mb-2">Испрати порака</a>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary w-100 mb-2">Зачувај оглас</a>
+                {% endif %}
+
+                {% if current_user.is_authenticated and (current_user.id == listing.user_id or current_user.is_admin) %}
+                <hr>
+                <a href="{{ url_for('cars.edit', id=listing.id) }}" class="btn btn-warning w-100 mb-2">Измени оглас</a>
+                <form method="POST" action="{{ url_for('cars.delete', id=listing.id) }}"
+                    onsubmit="return confirm('Дали сте сигурни?');">
+                    <button class="btn btn-danger w-100 mb-2" type="submit">Избриши оглас</button>
+                </form>
+                <form method="POST" action="{{ url_for('cars.mark_sold', id=listing.id) }}">
+                    <button class="btn btn-secondary w-100" type="submit">Означи како продадено</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5>Продавач</h5>
+                <p class="mb-1">
+                    <a href="{{ url_for('main.public_profile', user_id=listing.owner.id) }}">
+                         {{ listing.owner.name }}
+                    </a>
+                </p>
+                <p class="mb-0 small text-muted">
+                    Просечна оцена: {{ listing.owner.average_rating() }}
+                    ({{ listing.owner.review_count() }} рецензии)
+                </p>
+
+                {% if current_user.is_authenticated and current_user.id != listing.owner.id %}
+                <a href="{{ url_for('reviews.create', user_id=listing.owner.id, car_id=listing.id) }}"
+                    class="btn btn-outline-primary btn-sm w-100">
+                    Оцени го продавачот
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if similar %}
+<hr class="my-5">
+<h3 class="mb-3">Слични огласи</h3>
+<div class="row g-3">
+    {% for listing in similar %}
+    <div class="col-md-6 col-lg-3">
+        {% include 'cars/_card.html' %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<script>
+document.getElementById('showPhoneBtn').addEventListener('click', async function () {
+    const res = await fetch("{{ url_for('cars.show_phone', id=listing.id) }}", {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    });
+
+    const data= await res.json();
+    const phoneEl = document.getElementById('phoneNumber');
+    phoneEl.textContent = data.phone;
+    phoneEl.classList.remove('d-none');
+    this.classList.add('d-none');
+});
+</script>
+{% endblock %}
